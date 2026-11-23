@@ -10,4 +10,5 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
   config.active_support.deprecation = :log
   config.active_record.migration_error = :page_load
+  config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "development-secret-key-base-change-before-production")
 end

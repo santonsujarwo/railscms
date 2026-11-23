@@ -4,10 +4,6 @@ module Sections
   class Registry
     COMPONENTS = {
       "hero" => "Sections::HeroComponent",
-      "about" => "Sections::AboutComponent",
-      "services" => "Sections::ServicesComponent",
-      "features" => "Sections::FeaturesComponent",
-      "testimonials" => "Sections::TestimonialsComponent",
       "cta" => "Sections::CtaComponent"
     }.freeze
 
