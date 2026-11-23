@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+@layer base {
+  body {
+    color: var(--color-text, #333333);
+    font-family: var(--font-body, "DM Sans", sans-serif);
+    font-weight: var(--font-body-weight, 400);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading, "Urbanist", sans-serif);
+    font-weight: var(--font-heading-weight, 700);
+  }
+}

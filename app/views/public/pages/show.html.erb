@@ -1,4 +1,4 @@
-<main class="min-h-screen">
+<main class="min-h-screen" style="<%= design_token_styles(@global_style&.tokens) %>">
   <% @sections.each do |section| %>
     <% next unless Sections::Registry.registered?(section.section_type) %>
     <%= render Sections::Registry.fetch(section.section_type).new(section: section) %>
