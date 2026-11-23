@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "dashboard#index"
+    resource :global_style, only: %i[edit update]
     resources :pages, only: %i[index new create edit update destroy] do
       resources :sections, only: %i[create edit update destroy]
     end

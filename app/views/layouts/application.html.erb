@@ -11,7 +11,7 @@
     <% if user_signed_in? && request.path.start_with?("/admin") %>
       <nav class="border-b bg-white px-6 py-4"><div class="mx-auto flex max-w-7xl items-center justify-between">
         <%= link_to "RailsCMS", admin_root_path, class: "font-semibold" %>
-        <div class="flex items-center gap-4 text-sm"><%= link_to "Dashboard", admin_root_path %><%= link_to "Pages", admin_pages_path %><%= button_to "Sign out", destroy_user_session_path, method: :delete %></div>
+        <div class="flex items-center gap-4 text-sm"><%= link_to "Dashboard", admin_root_path %><%= link_to "Pages", admin_pages_path %><%= link_to "Global Styles", edit_admin_global_style_path %><%= button_to "Sign out", destroy_user_session_path, method: :delete %></div>
       </div></nav>
     <% end %>
     <% if notice.present? %><p class="bg-green-50 px-6 py-3 text-sm text-green-800"><%= notice %></p><% end %>
