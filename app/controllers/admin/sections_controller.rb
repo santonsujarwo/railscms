@@ -27,7 +27,9 @@ module Admin
         allowed_keys = @section.section_definition.field_definitions
                                 .where(group_name: group, enabled: true).pluck(:key)
         raw_values = params.require(:section).fetch(group, ActionController::Parameters.new)
-        attributes[group] = raw_values.permit(*allowed_keys).to_h
+        submitted_values = raw_values.permit(*allowed_keys).to_h
+        # Merge rather than replace so disabled/retired field data remains recoverable.
+        attributes[group] = (@section.public_send(group) || {}).merge(submitted_values)
       end
 
       missing_required = @section.section_definition.field_definitions
@@ -50,9 +52,7 @@ module Admin
       ordered = @page.sections.ordered.to_a
       current_index = ordered.index(@section)
       target_index = params[:direction] == "up" ? current_index - 1 : current_index + 1
-      if target_index.negative? || target_index >= ordered.length
-        return redirect_to edit_admin_page_path(@page)
-      end
+      return redirect_to edit_admin_page_path(@page) if target_index.negative? || target_index >= ordered.length
 
       ordered[current_index], ordered[target_index] = ordered[target_index], ordered[current_index]
       Page.transaction do
