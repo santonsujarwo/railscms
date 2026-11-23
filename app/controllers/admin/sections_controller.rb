@@ -1,7 +1,7 @@
 module Admin
   class SectionsController < ApplicationController
     before_action :set_page
-    before_action :set_section, only: %i[edit update destroy]
+    before_action :set_section, only: %i[edit update destroy move toggle]
 
     def create
       definition = SectionDefinition.where(enabled: true).find(params.require(:section_definition_id))
@@ -44,6 +44,26 @@ module Admin
         @field_groups = @section.section_definition.field_definitions.group_by(&:group_name)
         render :edit, status: :unprocessable_entity
       end
+    end
+
+    def move
+      ordered = @page.sections.ordered.to_a
+      current_index = ordered.index(@section)
+      target_index = params[:direction] == "up" ? current_index - 1 : current_index + 1
+      if target_index.negative? || target_index >= ordered.length
+        return redirect_to edit_admin_page_path(@page)
+      end
+
+      ordered[current_index], ordered[target_index] = ordered[target_index], ordered[current_index]
+      Page.transaction do
+        ordered.each_with_index { |item, index| item.update!(position: index) }
+      end
+      redirect_to edit_admin_page_path(@page), notice: "Section order updated."
+    end
+
+    def toggle
+      @section.update!(enabled: !@section.enabled?)
+      redirect_to edit_admin_page_path(@page), notice: "Section visibility updated."
     end
 
     def destroy

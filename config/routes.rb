@@ -8,7 +8,12 @@ Rails.application.routes.draw do
       resources :field_definitions, only: %i[create update destroy]
     end
     resources :pages, only: %i[index new create edit update destroy] do
-      resources :sections, only: %i[create edit update destroy]
+      resources :sections, only: %i[create edit update destroy] do
+        member do
+          patch :move
+          patch :toggle
+        end
+      end
     end
   end
 

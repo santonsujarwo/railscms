@@ -5,10 +5,16 @@
   <section class="mt-8">
     <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold">Flexible Content</h2><span class="text-sm text-slate-500"><%= @sections.size %> sections</span></div>
     <div class="space-y-3">
-      <% @sections.each do |section| %>
-        <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-5">
-          <div><p class="font-medium"><%= section.section_definition.name %></p><p class="mt-1 text-xs text-slate-500">Position <%= section.position + 1 %> · <%= section.enabled? ? "Enabled" : "Disabled" %></p></div>
-          <div class="flex items-center gap-4 text-sm"><%= link_to "Edit fields & style", edit_admin_page_section_path(@page, section), class: "font-medium text-indigo-600" %><%= button_to "Delete", admin_page_section_path(@page, section), method: :delete, form: { data: { turbo_confirm: "Delete this section?" } }, class: "text-red-600" %></div>
+      <% @sections.each_with_index do |section, index| %>
+        <div class="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div><p class="font-medium"><%= section.section_definition.name %></p><p class="mt-1 text-xs text-slate-500">Position <%= index + 1 %> · <%= section.enabled? ? "Enabled" : "Disabled" %></p></div>
+          <div class="flex flex-wrap items-center gap-3 text-sm">
+            <%= button_to "↑", move_admin_page_section_path(@page, section, direction: "up"), method: :patch, disabled: index.zero?, class: "rounded border px-2 py-1 disabled:opacity-30" %>
+            <%= button_to "↓", move_admin_page_section_path(@page, section, direction: "down"), method: :patch, disabled: index == @sections.length - 1, class: "rounded border px-2 py-1 disabled:opacity-30" %>
+            <%= link_to "Edit fields & style", edit_admin_page_section_path(@page, section), class: "font-medium text-indigo-600" %>
+            <%= button_to(section.enabled? ? "Disable" : "Enable", toggle_admin_page_section_path(@page, section), method: :patch, class: "text-slate-600") %>
+            <%= button_to "Delete", admin_page_section_path(@page, section), method: :delete, form: { data: { turbo_confirm: "Delete this section?" } }, class: "text-red-600" %>
+          </div>
         </div>
       <% end %>
     </div>
