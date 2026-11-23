@@ -19,12 +19,17 @@ module Admin
       end
     end
 
-    def edit; end
+    def edit
+      @sections = @page.sections.includes(:section_definition).ordered
+      @section_definitions = SectionDefinition.where(enabled: true).order(:name)
+    end
 
     def update
       if @page.update(page_params)
         redirect_to edit_admin_page_path(@page), notice: "Page updated."
       else
+        @sections = @page.sections.includes(:section_definition).ordered
+        @section_definitions = SectionDefinition.where(enabled: true).order(:name)
         render :edit, status: :unprocessable_entity
       end
     end

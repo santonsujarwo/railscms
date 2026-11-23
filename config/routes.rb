@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "dashboard#index"
-    resources :pages, only: %i[index new create edit update destroy]
+    resources :pages, only: %i[index new create edit update destroy] do
+      resources :sections, only: %i[create edit update destroy]
+    end
   end
 
   get "/up" => "rails/health#show", as: :rails_health_check
