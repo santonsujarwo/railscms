@@ -7,5 +7,12 @@ class Page < ApplicationRecord
   enum :status, { draft: "draft", published: "published", archived: "archived" }, default: :draft
   validates :title, presence: true
   validates :slug, presence: true, uniqueness: true
-  before_validation { self.slug = slug.to_s.parameterize if slug.present? }
+  before_validation :generate_slug
+
+  private
+
+  def generate_slug
+    source = slug.presence || title
+    self.slug = source.to_s.parameterize if source.present?
+  end
 end

@@ -1,10 +1,8 @@
 module Sections
   class HeroComponent < ViewComponent::Base
     def initialize(section:)
-      @section = section
       @content = section.content || {}
       @style = section.style || {}
-      @layout = section.layout || {}
     end
 
     def call
@@ -24,14 +22,26 @@ module Sections
 
     def render_button
       button = @content["button"] || {}
-      return unless button["label"].present? && button["url"].present?
+      return unless button["label"].present? && safe_button_url(button["url"])
 
-      link_to button["label"], button["url"], class: "mt-8 inline-flex rounded-lg bg-slate-900 px-6 py-3 font-medium text-white"
+      link_to button["label"], safe_button_url(button["url"]), class: "mt-8 inline-flex rounded-lg bg-slate-900 px-6 py-3 font-medium text-white"
+    end
+
+    def safe_button_url(value)
+      return if value.blank?
+      return value if value.start_with?("/", "#")
+
+      uri = URI.parse(value)
+      value if %w[https http mailto].include?(uri.scheme)
+    rescue URI::InvalidURIError
+      nil
     end
 
     def section_style
       background = @style["background"]
-      background.present? ? "background-color: #{background};" : nil
+      return unless background.to_s.match?(/\A#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/)
+
+      "background-color: #{background};"
     end
   end
 end
