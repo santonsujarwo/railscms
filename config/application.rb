@@ -15,7 +15,9 @@ module RailsCms
     config.load_defaults 8.0
     config.time_zone = "Asia/Jakarta"
     config.i18n.default_locale = :en
-    config.active_job.queue_adapter = :solid_queue
+    # Use the async adapter until the Solid Queue database schema and worker
+    # process are provisioned in the deployment environment.
+    config.active_job.queue_adapter = :async
     config.active_storage.variant_processor = :vips
   end
 end
