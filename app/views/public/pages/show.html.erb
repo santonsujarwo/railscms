@@ -1,0 +1,6 @@
+<main class="min-h-screen">
+  <% @sections.each do |section| %>
+    <% next unless Sections::Registry.registered?(section.section_type) %>
+    <%= render Sections::Registry.fetch(section.section_type).new(section: section) %>
+  <% end %>
+</main>

@@ -1,0 +1,22 @@
+<div class="mx-auto max-w-7xl px-6 py-10">
+  <div class="mb-8">
+    <p class="text-sm font-medium text-slate-500">RailsCMS</p>
+    <h1 class="mt-1 text-3xl font-semibold tracking-tight text-slate-900">Dashboard</h1>
+    <p class="mt-2 text-slate-600">Manage your website content and flexible sections.</p>
+  </div>
+  <div class="grid gap-4 sm:grid-cols-3">
+    <% [["Total pages", @pages_count], ["Published", @published_pages_count], ["Drafts", @draft_pages_count]].each do |label, value| %>
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="text-sm text-slate-500"><%= label %></p>
+        <p class="mt-2 text-3xl font-semibold text-slate-900"><%= value %></p>
+      </div>
+    <% end %>
+  </div>
+  <div class="mt-8 rounded-xl border border-slate-200 bg-white p-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-900">Pages</h2>
+      <%= link_to "Manage pages", admin_pages_path, class: "text-sm font-medium text-indigo-600" %>
+    </div>
+    <p class="mt-2 text-sm text-slate-500">Create pages and compose them with registered flexible-content sections.</p>
+  </div>
+</div>

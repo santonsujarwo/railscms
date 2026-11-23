@@ -1,0 +1,7 @@
+<%= form_with model: [:admin, page], class: "space-y-6" do |form| %>
+  <% if page.errors.any? %><div class="rounded-lg bg-red-50 p-4 text-sm text-red-700"><%= page.errors.full_messages.to_sentence %></div><% end %>
+  <div><%= form.label :title, class: "mb-2 block text-sm font-medium" %><%= form.text_field :title, class: "w-full rounded-lg border-slate-300" %></div>
+  <div><%= form.label :slug, class: "mb-2 block text-sm font-medium" %><%= form.text_field :slug, class: "w-full rounded-lg border-slate-300" %></div>
+  <div><%= form.label :status, class: "mb-2 block text-sm font-medium" %><%= form.select :status, Page.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "w-full rounded-lg border-slate-300" %></div>
+  <div class="flex gap-3"><%= form.submit class: "rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white" %><%= link_to "Cancel", admin_pages_path, class: "rounded-lg border px-5 py-2.5 text-sm" %></div>
+<% end %>
