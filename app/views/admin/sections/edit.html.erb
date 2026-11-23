@@ -1,5 +1,6 @@
 <div class="mx-auto max-w-4xl px-6 py-10">
   <div class="mb-8"><%= link_to "← Back to page", edit_admin_page_path(@page), class: "text-sm text-indigo-600" %><h1 class="mt-4 text-3xl font-semibold"><%= @section.section_definition.name %></h1><p class="mt-2 text-sm text-slate-500">Edit content and presentation settings for this section.</p></div>
+  <% if @section.errors.any? %><div class="mb-5 rounded-lg bg-red-50 p-4 text-sm text-red-700"><%= @section.errors.full_messages.to_sentence %></div><% end %>
   <%= form_with model: [:admin, @page, @section], class: "space-y-6" do |form| %>
     <% @field_groups.each do |group_name, fields| %>
       <section class="rounded-xl border border-slate-200 bg-white p-6">
@@ -7,17 +8,23 @@
         <div class="space-y-5">
           <% fields.each do |field| %>
             <% value = (@section.public_send(group_name) || {}).fetch(field.key, "") %>
+            <% input_name = "section[#{group_name}][#{field.key}]" %>
+            <% input_id = "section_#{group_name}_#{field.key}" %>
             <div>
-              <%= label_tag "section_#{group_name}_#{field.key}", field.label, class: "mb-2 block text-sm font-medium text-slate-700" %>
-              <% input_name = "section[#{group_name}][#{field.key}]" %>
-              <% input_id = "section_#{group_name}_#{field.key}" %>
+              <%= label_tag input_id, field.label, class: "mb-2 block text-sm font-medium text-slate-700" %>
               <% case field.field_type %>
               <% when "textarea", "wysiwyg" %>
                 <%= text_area_tag input_name, value, id: input_id, rows: 4, required: field.required, class: "w-full rounded-lg border-slate-300" %>
               <% when "color" %>
                 <%= color_field_tag input_name, value.presence || "#ffffff", id: input_id, class: "h-11 w-20 rounded border-slate-300" %>
               <% when "boolean" %>
-                <%= check_box_tag input_name, "1", ActiveModel::Type::Boolean.new.cast(value), id: input_id %>
+                <%= hidden_field_tag input_name, "0" %><%= check_box_tag input_name, "1", ActiveModel::Type::Boolean.new.cast(value), id: input_id %>
+              <% when "number" %>
+                <%= number_field_tag input_name, value, id: input_id, required: field.required, class: "w-full rounded-lg border-slate-300" %>
+              <% when "email" %>
+                <%= email_field_tag input_name, value, id: input_id, required: field.required, class: "w-full rounded-lg border-slate-300" %>
+              <% when "url" %>
+                <%= url_field_tag input_name, value, id: input_id, required: field.required, class: "w-full rounded-lg border-slate-300" %>
               <% else %>
                 <%= text_field_tag input_name, value, id: input_id, required: field.required, class: "w-full rounded-lg border-slate-300" %>
               <% end %>

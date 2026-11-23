@@ -1,0 +1,26 @@
+<div class="mx-auto max-w-5xl px-6 py-10">
+  <div class="mb-8"><%= link_to "← Section library", admin_section_definitions_path, class: "text-sm text-indigo-600" %><h1 class="mt-4 text-3xl font-semibold"><%= @section_definition.name %></h1><p class="mt-2 text-sm text-slate-500">Developer-registered section with administrator-configurable fields.</p></div>
+  <section class="rounded-xl border border-slate-200 bg-white p-6">
+    <h2 class="mb-4 text-lg font-semibold">Active fields</h2>
+    <div class="divide-y divide-slate-100">
+      <% @field_definitions.each do |field| %>
+        <div class="flex items-center justify-between py-3">
+          <div><p class="font-medium"><%= field.label %> <span class="ml-2 text-xs text-slate-400"><%= field.key %></span></p><p class="text-xs text-slate-500"><%= field.group_name %> · <%= field.field_type %><%= " · Required" if field.required? %></p></div>
+          <%= button_to "Disable", admin_section_definition_field_definition_path(@section_definition, field), method: :delete, form: { data: { turbo_confirm: "Disable this field? Existing section data will be preserved." } }, class: "text-sm text-red-600" %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+  <section class="mt-6 rounded-xl border border-slate-200 bg-white p-6">
+    <h2 class="mb-4 text-lg font-semibold">Add custom field</h2>
+    <%= form_with url: admin_section_definition_field_definitions_path(@section_definition), scope: :section_field_definition, class: "grid gap-4 sm:grid-cols-2" do |form| %>
+      <div><%= form.label :label, class: "mb-1 block text-sm font-medium" %><%= form.text_field :label, required: true, class: "w-full rounded-lg border-slate-300" %></div>
+      <div><%= form.label :key, "Field key", class: "mb-1 block text-sm font-medium" %><%= form.text_field :key, required: true, pattern: "[a-z][a-z0-9_]*", class: "w-full rounded-lg border-slate-300" %></div>
+      <div><%= form.label :field_type, class: "mb-1 block text-sm font-medium" %><%= form.select :field_type, SectionFieldDefinition::FIELD_TYPES.map { |type| [type.humanize, type] }, {}, class: "w-full rounded-lg border-slate-300" %></div>
+      <div><%= form.label :group_name, "Field group", class: "mb-1 block text-sm font-medium" %><%= form.select :group_name, SectionFieldDefinition::GROUP_NAMES.map { |group| [group.humanize, group] }, {}, class: "w-full rounded-lg border-slate-300" %></div>
+      <div><%= form.label :position, class: "mb-1 block text-sm font-medium" %><%= form.number_field :position, value: @field_definitions.size, min: 0, class: "w-full rounded-lg border-slate-300" %></div>
+      <div class="flex items-center gap-2 self-end pb-2"><%= form.check_box :required %><%= form.label :required %></div>
+      <div class="sm:col-span-2"><%= form.submit "Add field", class: "rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white" %></div>
+    <% end %>
+  </section>
+</div>

@@ -1,0 +1,13 @@
+<div class="mx-auto max-w-6xl px-6 py-10">
+  <h1 class="text-3xl font-semibold">Section Library</h1>
+  <p class="mt-2 text-sm text-slate-500">Manage the field schemas available to each registered section.</p>
+  <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <% @section_definitions.each do |definition| %>
+      <%= link_to edit_admin_section_definition_path(definition), class: "rounded-xl border border-slate-200 bg-white p-5 hover:border-slate-400" do %>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500"><%= definition.category %></p>
+        <h2 class="mt-2 font-semibold text-slate-900"><%= definition.name %></h2>
+        <p class="mt-1 text-sm text-slate-500"><%= definition.field_definitions.count %> active fields</p>
+      <% end %>
+    <% end %>
+  </div>
+</div>

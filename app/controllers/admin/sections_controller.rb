@@ -4,7 +4,7 @@ module Admin
     before_action :set_section, only: %i[edit update destroy]
 
     def create
-      definition = SectionDefinition.find(params.require(:section_definition_id))
+      definition = SectionDefinition.where(enabled: true).find(params.require(:section_definition_id))
       section = @page.sections.create!(
         section_definition: definition,
         uid: SecureRandom.uuid,
@@ -30,7 +30,15 @@ module Admin
         attributes[group] = raw_values.permit(*allowed_keys).to_h
       end
 
-      if @section.update(attributes)
+      missing_required = @section.section_definition.field_definitions
+                                   .where(required: true)
+                                   .any? { |field| attributes.fetch(field.group_name, {})[field.key].blank? }
+
+      if missing_required
+        @section.errors.add(:base, "Please complete all required fields.")
+        @field_groups = @section.section_definition.field_definitions.group_by(&:group_name)
+        render :edit, status: :unprocessable_entity
+      elsif @section.update(attributes)
         redirect_to edit_admin_page_path(@page), notice: "Section updated."
       else
         @field_groups = @section.section_definition.field_definitions.group_by(&:group_name)

@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#index"
     resource :global_style, only: %i[edit update]
+    resources :section_definitions, only: %i[index edit] do
+      resources :field_definitions, only: %i[create update destroy]
+    end
     resources :pages, only: %i[index new create edit update destroy] do
       resources :sections, only: %i[create edit update destroy]
     end
