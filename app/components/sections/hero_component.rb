@@ -2,15 +2,16 @@ module Sections
   class HeroComponent < ViewComponent::Base
     def initialize(section:)
       @content = section.content || {}
+      @layout = section.layout || {}
       @style = section.style || {}
     end
 
     def call
       content_tag :section, class: "py-20", style: section_style do
-        content_tag(:div, class: "mx-auto max-w-6xl px-6") do
+        content_tag(:div, class: "mx-auto px-6", style: container_style) do
           safe_join([
             content_tag(:p, @content["eyebrow"], class: "mb-3 text-sm font-semibold uppercase tracking-wider") if @content["eyebrow"].present?,
-            content_tag(:h1, @content["heading"], class: "text-4xl font-bold tracking-tight md:text-6xl"),
+            content_tag(:h1, @content["heading"], class: "text-4xl font-bold tracking-tight md:text-6xl", style: color_declaration(@style["heading_color"])),
             content_tag(:p, @content["description"], class: "mt-5 max-w-2xl text-lg leading-8") if @content["description"].present?,
             render_button
           ].compact)
@@ -21,10 +22,10 @@ module Sections
     private
 
     def render_button
-      button = @content["button"] || {}
-      return unless button["label"].present? && safe_button_url(button["url"])
+      url = safe_button_url(@content["button_url"])
+      return unless @content["button_label"].present? && url
 
-      link_to button["label"], safe_button_url(button["url"]), class: "mt-8 inline-flex rounded-lg bg-slate-900 px-6 py-3 font-medium text-white"
+      link_to @content["button_label"], url, class: "mt-8 inline-flex rounded-lg bg-slate-900 px-6 py-3 font-medium text-white"
     end
 
     def safe_button_url(value)
@@ -37,11 +38,35 @@ module Sections
       nil
     end
 
-    def section_style
-      background = @style["background"]
-      return unless background.to_s.match?(/\A#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/)
+    def color_declaration(value)
+      return unless value.to_s.match?(/\A#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/)
 
-      "background-color: #{background};"
+      "color: #{value};"
+    end
+
+    def safe_spacing(value)
+      return unless value.to_s.match?(/\A(?:0|\d+(?:\.\d+)?(?:px|rem|em|%))\z/)
+
+      value
+    end
+
+    def section_style
+      declarations = {
+        "background-color" => safe_color(@style["background"]),
+        "color" => safe_color(@style["text_color"]),
+        "padding-top" => safe_spacing(@style["padding_top"]),
+        "padding-bottom" => safe_spacing(@style["padding_bottom"])
+      }.compact
+      declarations.map { |property, value| "#{property}: #{value}" }.join("; ").presence
+    end
+
+    def container_style
+      width = safe_spacing(@layout["container_width"])
+      width ? "max-width: #{width};" : "max-width: 1200px;"
+    end
+
+    def safe_color(value)
+      value if value.to_s.match?(/\A#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/)
     end
   end
 end

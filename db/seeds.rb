@@ -18,8 +18,14 @@ definitions = [
       { key: "eyebrow", label: "Eyebrow", field_type: "text", group_name: "content", position: 0 },
       { key: "heading", label: "Heading", field_type: "text", group_name: "content", position: 1, required: true },
       { key: "description", label: "Description", field_type: "textarea", group_name: "content", position: 2 },
-      { key: "button", label: "Button", field_type: "group", group_name: "content", position: 3, settings: { "fields" => [{ "key" => "label", "type" => "text" }, { "key" => "url", "type" => "url" }] } },
-      { key: "background", label: "Background", field_type: "color", group_name: "style", position: 4 }
+      { key: "button_label", label: "Button label", field_type: "text", group_name: "content", position: 3 },
+      { key: "button_url", label: "Button URL", field_type: "url", group_name: "content", position: 4 },
+      { key: "container_width", label: "Container width", field_type: "text", group_name: "layout", position: 0 },
+      { key: "background", label: "Background color", field_type: "color", group_name: "style", position: 0 },
+      { key: "text_color", label: "Text color", field_type: "color", group_name: "style", position: 1 },
+      { key: "heading_color", label: "Heading color", field_type: "color", group_name: "style", position: 2 },
+      { key: "padding_top", label: "Padding top", field_type: "text", group_name: "style", position: 3 },
+      { key: "padding_bottom", label: "Padding bottom", field_type: "text", group_name: "style", position: 4 }
     ]
   },
   {
@@ -27,23 +33,34 @@ definitions = [
     settings: { "renderer" => "Sections::CtaComponent", "version" => 1 },
     fields: [
       { key: "heading", label: "Heading", field_type: "text", group_name: "content", position: 0, required: true },
-      { key: "description", label: "Description", field_type: "textarea", group_name: "content", position: 1 }
+      { key: "description", label: "Description", field_type: "textarea", group_name: "content", position: 1 },
+      { key: "background", label: "Background color", field_type: "color", group_name: "style", position: 0 },
+      { key: "text_color", label: "Text color", field_type: "color", group_name: "style", position: 1 },
+      { key: "padding_top", label: "Padding top", field_type: "text", group_name: "style", position: 2 },
+      { key: "padding_bottom", label: "Padding bottom", field_type: "text", group_name: "style", position: 3 }
     ]
   }
 ]
 
 definitions.each do |definition|
-  section_definition = SectionDefinition.find_or_create_by!(key: definition[:key]) do |record|
-    record.name = definition[:name]
-    record.category = definition[:category]
-    record.settings = definition[:settings]
-  end
+  section_definition = SectionDefinition.find_or_initialize_by(key: definition[:key])
+  section_definition.assign_attributes(
+    name: definition[:name],
+    category: definition[:category],
+    settings: definition[:settings],
+    enabled: true,
+    schema_version: 1
+  )
+  section_definition.save!
 
   definition[:fields].each do |field|
-    key = field.delete(:key)
-    SectionFieldDefinition.find_or_create_by!(section_definition: section_definition, key: key) do |record|
-      record.assign_attributes(field)
-    end
+    attributes = field.except(:key)
+    field_definition = SectionFieldDefinition.find_or_initialize_by(
+      section_definition: section_definition,
+      key: field[:key]
+    )
+    field_definition.assign_attributes(attributes)
+    field_definition.save!
   end
 end
 
