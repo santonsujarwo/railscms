@@ -15,9 +15,12 @@ Rails.application.routes.draw do
         end
       end
     end
+    resources :posts
+    resources :categories
   end
 
   get "/up" => "rails/health#show", as: :rails_health_check
   root "public/pages#home"
+  get "/posts/:slug", to: "public/posts#show", as: :public_post
   get "*path", to: "public/pages#show", constraints: ->(request) { !request.path.start_with?("/rails/") }
 end
