@@ -6,7 +6,7 @@ module Admin
     def restore
       attributes = @revision.snapshot.slice(
         "title", "slug", "excerpt", "body", "status", "published_at",
-        "category_id", "seo_title", "seo_description", "canonical_url", "noindex"
+        "category_id", "featured_media_asset_id", "seo_title", "seo_description", "canonical_url", "noindex"
       )
       @post.update!(attributes)
       ContentRevision.capture!(@post, user: current_user, event: "restore")
