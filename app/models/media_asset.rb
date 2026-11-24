@@ -1,5 +1,6 @@
 class MediaAsset < ApplicationRecord
   belongs_to :uploaded_by, class_name: "User"
+  has_many :featured_posts, class_name: "Post", foreign_key: :featured_media_asset_id, dependent: :nullify
   has_one_attached :file
 
   validates :alt_text, length: { maximum: 500 }
