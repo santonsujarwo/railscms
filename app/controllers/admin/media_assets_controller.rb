@@ -11,8 +11,9 @@ module Admin
     end
 
     def create
-      @media_asset = MediaAsset.new(media_asset_params.except(:file).merge(uploaded_by: current_user))
-      @media_asset.file.attach(media_asset_params[:file]) if media_asset_params[:file].present?
+      attributes = media_asset_params
+      @media_asset = MediaAsset.new(attributes.except(:file).merge(uploaded_by: current_user))
+      @media_asset.file.attach(attributes[:file]) if attributes[:file].present?
 
       if @media_asset.save
         redirect_to admin_media_assets_path, notice: "Media uploaded."
@@ -25,8 +26,11 @@ module Admin
     end
 
     def update
-      if @media_asset.update(media_asset_params.except(:file))
-        @media_asset.file.attach(media_asset_params[:file]) if media_asset_params[:file].present?
+      attributes = media_asset_params
+      @media_asset.assign_attributes(attributes.except(:file))
+      @media_asset.file.attach(attributes[:file]) if attributes[:file].present?
+
+      if @media_asset.save
         redirect_to admin_media_assets_path, notice: "Media details updated."
       else
         render :edit, status: :unprocessable_entity
