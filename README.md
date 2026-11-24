@@ -13,6 +13,7 @@ A custom Ruby on Rails CMS built around ACF-inspired Hybrid Flexible Content.
 - Posts and hierarchical categories
 - Per-page and per-post SEO metadata (title, description, canonical URL, noindex)
 - Content revision snapshots for pages and posts
+- Media Library with image validation and S3-compatible object storage
 - Docker deployment target for Railway
 
 The visual drag-and-drop builder is intentionally excluded from v1.
@@ -32,7 +33,7 @@ The visual drag-and-drop builder is intentionally excluded from v1.
 5. Seed initial section definitions and global styles: `bin/rails db:seed`.
 6. Start the server: `bin/rails server`.
 
-The initial section library includes Hero and Call to Action. The admin Pages screen supports adding a registered section and editing its schema-defined fields. The admin also provides Posts and Categories screens. Posts can be drafted, scheduled, published, categorized, and configured with SEO metadata. Page and post edits are captured in a revision history.
+The admin includes Pages, Posts, Categories, Media Library, Sections, and Global Styles. Posts can be drafted, scheduled, published, categorized, and configured with SEO metadata. Page and post edits are captured in a revision history. The Media Library accepts JPEG, PNG, WebP, GIF, and AVIF images up to 15 MB.
 
 ## Railway deployment
 
@@ -44,11 +45,16 @@ Set these variables:
 - `SECRET_KEY_BASE` (generate a unique secret)
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
+- `ACTIVE_STORAGE_SERVICE=r2`
+- `R2_ACCESS_KEY_ID`
+- `R2_SECRET_ACCESS_KEY`
+- `R2_BUCKET`
+- `R2_ENDPOINT` (Cloudflare R2 endpoint, e.g. `https://<account-id>.r2.cloudflarestorage.com`)
+
+The production storage service defaults to R2 so uploads are not silently written to Railway's ephemeral container filesystem. Keep the R2 bucket private unless public delivery is intentionally configured.
 
 Run `bin/rails db:seed` once after the first deployment to create the administrator and default design tokens. The Docker start command runs `db:prepare`.
 
-**Storage note:** local Active Storage is for development only. Configure persistent S3-compatible storage (for example Cloudflare R2) before uploading production media. Do not rely on an ephemeral application filesystem.
-
 ## Current implementation status
 
-The CMS now includes the initial flexible-content editor, Posts, Categories, SEO fields, and basic revision snapshots. The repository is still not production-ready: Rails boot, migrations, and RSpec must be verified in CI; media storage, revision restore UI, richer field types, and production QA remain outstanding.
+The CMS includes the initial flexible-content editor, Posts, Categories, SEO fields, basic revision snapshots, and an initial Media Library. It is not yet production-ready: CI must pass, revision restore UI, richer field types, media picker integration, and production QA remain outstanding.
