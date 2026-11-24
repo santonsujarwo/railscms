@@ -8,7 +8,7 @@ module Admin
 
     def new
       @post = Post.new(status: "draft")
-      load_categories
+      load_editor_data
     end
 
     def create
@@ -17,7 +17,7 @@ module Admin
         ContentRevision.capture!(@post, user: current_user, event: "create")
         redirect_to edit_admin_post_path(@post), notice: "Post created."
       else
-        load_categories
+        load_editor_data
         render :new, status: :unprocessable_entity
       end
     end
@@ -27,7 +27,7 @@ module Admin
     end
 
     def edit
-      load_categories
+      load_editor_data
       @revisions = @post.content_revisions.includes(:user).recent.limit(10)
     end
 
@@ -36,7 +36,7 @@ module Admin
         ContentRevision.capture!(@post, user: current_user)
         redirect_to edit_admin_post_path(@post), notice: "Post updated."
       else
-        load_categories
+        load_editor_data
         @revisions = @post.content_revisions.includes(:user).recent.limit(10)
         render :edit, status: :unprocessable_entity
       end
@@ -53,13 +53,14 @@ module Admin
       @post = Post.find(params[:id])
     end
 
-    def load_categories
+    def load_editor_data
       @categories = Category.enabled.order(:name)
+      @media_assets = MediaAsset.includes(file_attachment: :blob).recent
     end
 
     def post_params
       params.require(:post).permit(:title, :slug, :excerpt, :body, :status, :published_at, :category_id,
-                                   :seo_title, :seo_description, :canonical_url, :noindex)
+                                   :featured_media_asset_id, :seo_title, :seo_description, :canonical_url, :noindex)
     end
   end
 end
