@@ -12,8 +12,9 @@ A custom Ruby on Rails CMS built around ACF-inspired Hybrid Flexible Content.
 - Global design tokens
 - Posts and hierarchical categories
 - Per-page and per-post SEO metadata (title, description, canonical URL, noindex)
-- Content revision snapshots for pages and posts
+- Page and post revision snapshots with restore actions
 - Media Library with image validation and S3-compatible object storage
+- Featured image selection for posts
 - Docker deployment target for Railway
 
 The visual drag-and-drop builder is intentionally excluded from v1.
@@ -23,6 +24,7 @@ The visual drag-and-drop builder is intentionally excluded from v1.
 - Ruby 3.3+
 - PostgreSQL 14+
 - Node.js is not required for the importmap-based application frontend
+- libvips native library for image variants
 
 ## Local setup
 
@@ -33,7 +35,7 @@ The visual drag-and-drop builder is intentionally excluded from v1.
 5. Seed initial section definitions and global styles: `bin/rails db:seed`.
 6. Start the server: `bin/rails server`.
 
-The admin includes Pages, Posts, Categories, Media Library, Sections, and Global Styles. Posts can be drafted, scheduled, published, categorized, and configured with SEO metadata. Page and post edits are captured in a revision history. The Media Library accepts JPEG, PNG, WebP, GIF, and AVIF images up to 15 MB.
+The admin includes Pages, Posts, Categories, Media Library, Sections, and Global Styles. Posts can be drafted, scheduled, published, categorized, assigned a featured image from the Media Library, and configured with SEO metadata. Page and post edits are captured in a revision history, and saved revisions can be restored. The Media Library accepts JPEG, PNG, WebP, GIF, and AVIF images up to 15 MB.
 
 ## Railway deployment
 
@@ -57,4 +59,4 @@ Run `bin/rails db:seed` once after the first deployment to create the administra
 
 ## Current implementation status
 
-The CMS includes the initial flexible-content editor, Posts, Categories, SEO fields, basic revision snapshots, and an initial Media Library. It is not yet production-ready: CI must pass, revision restore UI, richer field types, media picker integration, and production QA remain outstanding.
+The CMS includes the initial flexible-content editor, Posts, Categories, SEO fields, revision snapshots and restore actions, and a Media Library with post featured-image selection. It is still under development: richer section field types, a media picker for section fields, comprehensive authorization policies, and production QA remain outstanding. Do not deploy as production until CI and the staging checklist pass.
