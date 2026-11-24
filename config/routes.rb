@@ -14,8 +14,15 @@ Rails.application.routes.draw do
           patch :toggle
         end
       end
+      resources :revisions, controller: "page_revisions", only: [] do
+        member { patch :restore }
+      end
     end
-    resources :posts
+    resources :posts do
+      resources :revisions, controller: "post_revisions", only: [] do
+        member { patch :restore }
+      end
+    end
     resources :categories
     resources :media_assets, path: "media"
   end
