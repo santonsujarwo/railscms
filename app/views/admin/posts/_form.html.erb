@@ -7,6 +7,8 @@
     <div><%= form.label :excerpt, class: "mb-2 block text-sm font-medium" %><%= form.text_area :excerpt, rows: 3, class: "w-full rounded-lg border-slate-300" %></div>
     <div><%= form.label :body, "Article body", class: "mb-2 block text-sm font-medium" %><%= form.text_area :body, rows: 16, class: "w-full rounded-lg border-slate-300" %></div>
     <div><%= form.label :category_id, class: "mb-2 block text-sm font-medium" %><%= form.collection_select :category_id, @categories, :id, :name, { include_blank: "Uncategorized" }, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :featured_media_asset_id, "Featured image", class: "mb-2 block text-sm font-medium" %><%= form.collection_select :featured_media_asset_id, @media_assets, :id, :display_name, { include_blank: "No featured image" }, class: "w-full rounded-lg border-slate-300" %></div>
+    <% if post.featured_media_asset&.file&.attached? %><%= image_tag post.featured_media_asset.file.variant(resize_to_limit: [600, 350]), alt: post.featured_media_asset.alt_text, class: "max-h-56 rounded-lg object-cover" %><% end %>
     <div><%= form.label :status, class: "mb-2 block text-sm font-medium" %><%= form.select :status, Post.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "w-full rounded-lg border-slate-300" %></div>
     <div><%= form.label :published_at, class: "mb-2 block text-sm font-medium" %><%= form.datetime_local_field :published_at, class: "w-full rounded-lg border-slate-300" %></div>
   </section>
