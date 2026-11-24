@@ -4,4 +4,5 @@ class User < ApplicationRecord
   has_many :pages, foreign_key: :author_id, dependent: :nullify
   has_many :posts, foreign_key: :author_id, dependent: :nullify
   has_many :content_revisions, dependent: :nullify
+  has_many :media_assets, foreign_key: :uploaded_by_id, dependent: :nullify
 end
