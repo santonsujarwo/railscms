@@ -10,6 +10,10 @@ class MediaAsset < ApplicationRecord
 
   scope :recent, -> { order(created_at: :desc) }
 
+  def display_name
+    file.attached? ? file.filename.to_s : "Missing file"
+  end
+
   private
 
   def file_must_be_attached
