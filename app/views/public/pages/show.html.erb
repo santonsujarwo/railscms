@@ -1,6 +1,6 @@
 <% content_for :title, @page.meta_title %>
 <% content_for :meta_description, @page.seo_description if @page.seo_description.present? %>
-<% content_for :canonical_url, @page.canonical_url.presence || request.original_url %>
+<% content_for :canonical_url, @page.canonical_url.presence || "#{request.base_url}#{request.path}" %>
 <% content_for :robots, (@page.noindex? ? "noindex, nofollow" : "index, follow") %>
 <main class="min-h-screen" style="<%= design_token_styles(@global_style&.tokens) %>">
   <% @sections.each do |section| %>
