@@ -15,6 +15,7 @@ gem "solid_queue"
 gem "solid_cache"
 gem "image_processing", "~> 1.2"
 gem "ruby-vips"
+gem "aws-sdk-s3", require: false
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "rspec-rails"
