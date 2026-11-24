@@ -20,16 +20,17 @@ module Admin
     end
 
     def edit
-      @sections = @page.sections.includes(:section_definition).ordered
-      @section_definitions = SectionDefinition.where(enabled: true).order(:name)
+      load_editor_data
+      @revisions = @page.content_revisions.includes(:user).recent.limit(10)
     end
 
     def update
       if @page.update(page_params)
+        ContentRevision.capture!(@page, user: current_user)
         redirect_to edit_admin_page_path(@page), notice: "Page updated."
       else
-        @sections = @page.sections.includes(:section_definition).ordered
-        @section_definitions = SectionDefinition.where(enabled: true).order(:name)
+        load_editor_data
+        @revisions = @page.content_revisions.includes(:user).recent.limit(10)
         render :edit, status: :unprocessable_entity
       end
     end
@@ -45,8 +46,13 @@ module Admin
       @page = Page.find(params[:id])
     end
 
+    def load_editor_data
+      @sections = @page.sections.includes(:section_definition).ordered
+      @section_definitions = SectionDefinition.where(enabled: true).order(:name)
+    end
+
     def page_params
-      params.require(:page).permit(:title, :slug, :status, :parent_id)
+      params.require(:page).permit(:title, :slug, :status, :parent_id, :seo_title, :seo_description, :canonical_url, :noindex)
     end
   end
 end
