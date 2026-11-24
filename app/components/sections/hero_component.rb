@@ -1,3 +1,5 @@
+require "uri"
+
 module Sections
   class HeroComponent < ViewComponent::Base
     def initialize(section:)
