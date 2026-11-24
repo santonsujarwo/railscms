@@ -35,8 +35,10 @@ module Sections
     end
 
     def safe_button_url(value)
+      value = value.to_s.strip
       return if value.blank?
-      return value if value.start_with?("/", "#")
+      return value if value.start_with?("#")
+      return value if value.start_with?("/") && !value.start_with?("//")
 
       uri = URI.parse(value)
       value if %w[https http mailto].include?(uri.scheme)
