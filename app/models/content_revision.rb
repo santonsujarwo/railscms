@@ -8,11 +8,13 @@ class ContentRevision < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
 
   def self.capture!(record, user:, event: "update")
+    snapshot = record.respond_to?(:revision_snapshot) ? record.revision_snapshot : record.attributes
+
     create!(
       record: record,
       user: user,
       event: event,
-      snapshot: record.attributes
+      snapshot: snapshot
     )
   end
 end
