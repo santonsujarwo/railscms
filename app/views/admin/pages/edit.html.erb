@@ -26,5 +26,17 @@
       <% end %>
     </div>
   </section>
-  <% if @revisions.present? %><section class="mt-8 rounded-xl border bg-white p-6"><h2 class="mb-4 text-lg font-semibold">Revision history</h2><ul class="space-y-2 text-sm text-slate-600"><% @revisions.each do |revision| %><li><%= l(revision.created_at, format: :long) %> · <%= revision.user&.name || "System" %></li><% end %></ul></section><% end %>
+  <% if @revisions.present? %>
+    <section class="mt-8 rounded-xl border bg-white p-6">
+      <h2 class="mb-4 text-lg font-semibold">Revision history</h2>
+      <ul class="space-y-3 text-sm text-slate-600">
+        <% @revisions.each do |revision| %>
+          <li class="flex flex-wrap items-center justify-between gap-3">
+            <span><%= l(revision.created_at, format: :long) %> · <%= revision.event.humanize %> · <%= revision.user&.name || "System" %></span>
+            <%= button_to "Restore", restore_admin_page_revision_path(@page, revision), method: :patch, form: { data: { turbo_confirm: "Restore this page revision? Current page fields will be replaced." } }, class: "font-medium text-indigo-600" %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
 </div>
