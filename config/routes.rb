@@ -23,8 +23,8 @@ Rails.application.routes.draw do
         member { patch :restore }
       end
     end
-    resources :categories
-    resources :media_assets, path: "media"
+    resources :categories, only: %i[index new create edit update destroy]
+    resources :media_assets, path: "media", only: %i[index new create edit update destroy]
   end
 
   get "/up" => "rails/health#show", as: :rails_health_check
