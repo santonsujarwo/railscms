@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     end
     resources :posts
     resources :categories
+    resources :media_assets, path: "media"
   end
 
   get "/up" => "rails/health#show", as: :rails_health_check
