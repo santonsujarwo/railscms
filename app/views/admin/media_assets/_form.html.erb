@@ -1,0 +1,8 @@
+<%= form_with model: [:admin, media_asset], class: "space-y-5 rounded-xl border bg-white p-6" do |form| %>
+  <% if media_asset.errors.any? %><div class="rounded-lg bg-red-50 p-4 text-sm text-red-700"><%= media_asset.errors.full_messages.to_sentence %></div><% end %>
+  <div><%= form.label :file, "Image file", class: "mb-2 block text-sm font-medium" %><%= form.file_field :file, accept: "image/jpeg,image/png,image/webp,image/gif,image/avif", class: "w-full rounded-lg border p-3" %><p class="mt-1 text-xs text-slate-500">JPEG, PNG, WebP, GIF or AVIF. Maximum 15 MB.</p></div>
+  <% if media_asset.file.attached? %><%= image_tag media_asset.file.variant(resize_to_limit: [600, 450]), class: "max-h-64 rounded-lg object-contain" %><% end %>
+  <div><%= form.label :alt_text, class: "mb-2 block text-sm font-medium" %><%= form.text_field :alt_text, class: "w-full rounded-lg border-slate-300" %></div>
+  <div><%= form.label :caption, class: "mb-2 block text-sm font-medium" %><%= form.text_field :caption, class: "w-full rounded-lg border-slate-300" %></div>
+  <div class="flex gap-3"><%= form.submit class: "rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white" %><%= link_to "Cancel", admin_media_assets_path, class: "rounded-lg border px-5 py-2.5 text-sm" %></div>
+<% end %>

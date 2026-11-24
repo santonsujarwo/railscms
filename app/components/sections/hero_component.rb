@@ -1,3 +1,5 @@
+require "uri"
+
 module Sections
   class HeroComponent < ViewComponent::Base
     def initialize(section:)
@@ -9,12 +11,16 @@ module Sections
     def call
       content_tag :section, class: "py-20", style: section_style do
         content_tag(:div, class: "mx-auto px-6", style: container_style) do
-          safe_join([
-            content_tag(:p, @content["eyebrow"], class: "mb-3 text-sm font-semibold uppercase tracking-wider") if @content["eyebrow"].present?,
-            content_tag(:h1, @content["heading"], class: "text-4xl font-bold tracking-tight md:text-6xl", style: color_declaration(@style["heading_color"])),
-            content_tag(:p, @content["description"], class: "mt-5 max-w-2xl text-lg leading-8") if @content["description"].present?,
-            render_button
-          ].compact)
+          elements = []
+          if @content["eyebrow"].present?
+            elements << content_tag(:p, @content["eyebrow"], class: "mb-3 text-sm font-semibold uppercase tracking-wider")
+          end
+          elements << content_tag(:h1, @content["heading"], class: "text-4xl font-bold tracking-tight md:text-6xl", style: color_declaration(@style["heading_color"]))
+          if @content["description"].present?
+            elements << content_tag(:p, @content["description"], class: "mt-5 max-w-2xl text-lg leading-8")
+          end
+          elements << render_button
+          safe_join(elements.compact)
         end
       end
     end
@@ -29,8 +35,10 @@ module Sections
     end
 
     def safe_button_url(value)
+      value = value.to_s.strip
       return if value.blank?
-      return value if value.start_with?("/", "#")
+      return value if value.start_with?("#")
+      return value if value.start_with?("/") && !value.start_with?("//")
 
       uri = URI.parse(value)
       value if %w[https http mailto].include?(uri.scheme)

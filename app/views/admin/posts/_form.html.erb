@@ -1,0 +1,23 @@
+<%= form_with model: [:admin, post], class: "space-y-6" do |form| %>
+  <% if post.errors.any? %><div class="rounded-lg bg-red-50 p-4 text-sm text-red-700"><%= post.errors.full_messages.to_sentence %></div><% end %>
+  <section class="space-y-4 rounded-xl border bg-white p-6">
+    <h2 class="text-lg font-semibold">Content</h2>
+    <div><%= form.label :title, class: "mb-2 block text-sm font-medium" %><%= form.text_field :title, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :slug, class: "mb-2 block text-sm font-medium" %><%= form.text_field :slug, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :excerpt, class: "mb-2 block text-sm font-medium" %><%= form.text_area :excerpt, rows: 3, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :body, "Article body", class: "mb-2 block text-sm font-medium" %><%= form.text_area :body, rows: 16, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :category_id, class: "mb-2 block text-sm font-medium" %><%= form.collection_select :category_id, @categories, :id, :name, { include_blank: "Uncategorized" }, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :featured_media_asset_id, "Featured image", class: "mb-2 block text-sm font-medium" %><%= form.collection_select :featured_media_asset_id, @media_assets, :id, :display_name, { include_blank: "No featured image" }, class: "w-full rounded-lg border-slate-300" %></div>
+    <% if post.featured_media_asset&.file&.attached? %><%= image_tag post.featured_media_asset.file.variant(resize_to_limit: [600, 350]), alt: post.featured_media_asset.alt_text, class: "max-h-56 rounded-lg object-cover" %><% end %>
+    <div><%= form.label :status, class: "mb-2 block text-sm font-medium" %><%= form.select :status, Post.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :published_at, class: "mb-2 block text-sm font-medium" %><%= form.datetime_local_field :published_at, class: "w-full rounded-lg border-slate-300" %></div>
+  </section>
+  <section class="space-y-4 rounded-xl border bg-white p-6">
+    <h2 class="text-lg font-semibold">Search engine settings</h2>
+    <div><%= form.label :seo_title, class: "mb-2 block text-sm font-medium" %><%= form.text_field :seo_title, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :seo_description, class: "mb-2 block text-sm font-medium" %><%= form.text_area :seo_description, rows: 3, class: "w-full rounded-lg border-slate-300" %></div>
+    <div><%= form.label :canonical_url, class: "mb-2 block text-sm font-medium" %><%= form.url_field :canonical_url, class: "w-full rounded-lg border-slate-300" %></div>
+    <label class="flex items-center gap-2 text-sm"><%= form.check_box :noindex %> Ask search engines not to index this post</label>
+  </section>
+  <div class="flex gap-3"><%= form.submit class: "rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white" %><%= link_to "Cancel", admin_posts_path, class: "rounded-lg border px-5 py-2.5 text-sm" %></div>
+<% end %>

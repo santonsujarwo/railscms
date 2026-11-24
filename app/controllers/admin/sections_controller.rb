@@ -14,6 +14,7 @@ module Admin
         style: {},
         responsive: {}
       )
+      capture_page_revision("section_create")
       redirect_to edit_admin_page_section_path(@page, section), notice: "Section added."
     end
 
@@ -41,6 +42,7 @@ module Admin
         @field_groups = @section.section_definition.field_definitions.group_by(&:group_name)
         render :edit, status: :unprocessable_entity
       elsif @section.update(attributes)
+        capture_page_revision("section_update")
         redirect_to edit_admin_page_path(@page), notice: "Section updated."
       else
         @field_groups = @section.section_definition.field_definitions.group_by(&:group_name)
@@ -58,16 +60,19 @@ module Admin
       Page.transaction do
         ordered.each_with_index { |item, index| item.update!(position: index) }
       end
+      capture_page_revision("section_reorder")
       redirect_to edit_admin_page_path(@page), notice: "Section order updated."
     end
 
     def toggle
       @section.update!(enabled: !@section.enabled?)
+      capture_page_revision("section_visibility")
       redirect_to edit_admin_page_path(@page), notice: "Section visibility updated."
     end
 
     def destroy
       @section.destroy
+      capture_page_revision("section_delete")
       redirect_to edit_admin_page_path(@page), notice: "Section deleted."
     end
 
@@ -79,6 +84,10 @@ module Admin
 
     def set_section
       @section = @page.sections.find(params[:id])
+    end
+
+    def capture_page_revision(event)
+      ContentRevision.capture!(@page, user: current_user, event: event)
     end
   end
 end

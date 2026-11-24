@@ -1,3 +1,5 @@
+require "devise/orm/active_record"
+
 Devise.setup do |config|
   config.mailer_sender = ENV.fetch("MAILER_SENDER", "no-reply@example.com")
   config.parent_controller = "ApplicationController"

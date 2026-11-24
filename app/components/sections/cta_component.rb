@@ -8,10 +8,11 @@ module Sections
     def call
       content_tag :section, class: "px-6 text-center", style: section_style do
         content_tag(:div, class: "mx-auto", style: "max-width: var(--container-width, 1200px);") do
-          safe_join([
-            content_tag(:h2, @content["heading"], class: "text-3xl font-bold"),
-            content_tag(:p, @content["description"], class: "mt-4 text-lg") if @content["description"].present?
-          ].compact)
+          elements = [content_tag(:h2, @content["heading"], class: "text-3xl font-bold")]
+          if @content["description"].present?
+            elements << content_tag(:p, @content["description"], class: "mt-4 text-lg")
+          end
+          safe_join(elements)
         end
       end
     end
