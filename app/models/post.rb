@@ -1,6 +1,7 @@
 class Post < ApplicationRecord
   belongs_to :author, class_name: "User"
   belongs_to :category, optional: true
+  belongs_to :featured_media_asset, class_name: "MediaAsset", optional: true
   has_many :content_revisions, as: :record, dependent: :destroy
 
   enum :status, { draft: "draft", published: "published", archived: "archived" }, default: :draft
