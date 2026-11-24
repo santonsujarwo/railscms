@@ -1,0 +1,5 @@
+<div class="mx-auto max-w-4xl px-6 py-10">
+  <div class="mb-8 flex items-center justify-between"><h1 class="text-3xl font-semibold">Edit post</h1><%= link_to "View public post", public_post_path(@post.slug), target: "_blank", class: "text-sm font-medium text-indigo-600" if @post.published? %></div>
+  <%= render "form", post: @post %>
+  <% if @revisions.present? %><section class="mt-8 rounded-xl border bg-white p-6"><h2 class="mb-4 text-lg font-semibold">Revision history</h2><ul class="space-y-2 text-sm text-slate-600"><% @revisions.each do |revision| %><li><%= l(revision.created_at, format: :long) %> · <%= revision.event.humanize %> · <%= revision.user&.name || "System" %></li><% end %></ul></section><% end %>
+</div>
