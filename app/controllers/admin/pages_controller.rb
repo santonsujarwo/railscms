@@ -13,6 +13,7 @@ module Admin
     def create
       @page = Page.new(page_params.merge(author: current_user))
       if @page.save
+        ContentRevision.capture!(@page, user: current_user, event: "create")
         redirect_to edit_admin_page_path(@page), notice: "Page created."
       else
         render :new, status: :unprocessable_entity
