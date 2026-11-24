@@ -15,6 +15,29 @@ class Page < ApplicationRecord
     seo_title.presence || title
   end
 
+  def revision_snapshot
+    page_attributes = attributes.slice(
+      "title", "slug", "status", "author_id", "parent_id", "published_at",
+      "seo_title", "seo_description", "canonical_url", "noindex"
+    )
+
+    page_attributes.merge(
+      "sections" => sections.includes(:section_definition).ordered.map do |section|
+        {
+          "uid" => section.uid,
+          "section_definition_key" => section.section_definition.key,
+          "position" => section.position,
+          "enabled" => section.enabled,
+          "schema_version" => section.schema_version,
+          "content" => section.content,
+          "layout" => section.layout,
+          "style" => section.style,
+          "responsive" => section.responsive
+        }
+      end
+    )
+  end
+
   private
 
   def generate_slug
